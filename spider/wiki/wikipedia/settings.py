@@ -56,3 +56,10 @@ AUTOTHROTTLE_ENABLED = True  # 自动限速
 DOWNLOAD_DELAY = 2  # 爬取速度，单位s
 REDIRECT_ENABLED = False  # 关闭重定向
 AUTOTHROTTLE_MAX_DELAY = 10  # 默认60
+
+
+# MySQL connect setting
+HOST = "localhost"
+USER = "root"
+PASSWORD = "123456"
+DATABASE_NAME = "umls_subset"
