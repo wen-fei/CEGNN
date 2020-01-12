@@ -19,3 +19,8 @@ class PageItem(scrapy.Item):
     pageid = scrapy.Field()
     images = scrapy.Field()
     wikitext = scrapy.Field()
+
+
+class ImageItem(scrapy.Item):
+    concept = scrapy.Field()
+    url = scrapy.Field()
