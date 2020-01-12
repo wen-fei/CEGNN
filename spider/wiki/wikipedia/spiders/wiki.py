@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-__author__ = 'xiyuanbupt'
-
-# e-mail : xywbupt@gmail.com
-
-import collections
 import json
 import logging
+import urllib
 from urllib.parse import urlencode
 import scrapy
 from scrapy.http import Request
-from items import PageItem
+from items import PageItem, ImageItem
 from settings import HEADERS
+from util.CUITool import CUITool
+import urllib.request
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +18,6 @@ class WikiSpider(scrapy.Spider):
     allowed_domains = ["en.wikipedia.org"]
     wiki_base = "https://en.wikipedia.org/wiki/"
     api_url = "https://en.wikipedia.org/w/api.php"
-    # start_urls = [
-    #     api_url + "?action=query&list=search&format=json&" + \
-    #     "prop=categories|images|pageimages|revisions&" + \
-    #     "formatversion=2&rvprop=content&utf8&srsearch="
-    # ]
     start_url = [api_url]
     meta_proxy = "http://127.0.0.1:1080"
     visited = set()
@@ -46,16 +39,20 @@ class WikiSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-
-        # key = "cemeterties"
-        concept_def = []
-        for concept, key in concept_def:
-            url = self.start_urls[0] + "?" + urlencode(self.querystring) + "&srsearch=" + key
-            yield Request(url,
-                          callback=self.parse,
-                          headers=self.headers,
-                          meta={'proxy': self.meta_proxy, 'concept': concept}
-                          )
+        # prepare keys format as cui:concept_name
+        db = CUITool()
+        # TODO 考虑可扩展性，因为不只一个UMLS数据库
+        # cui 最大G4551440
+        for i in range(1, 2277):
+            cuis = ("G" + str(i).zfill(7) for i in range(i, i + 2000))
+            concept_def = db.query_batch(cuis)
+            for concept, key in concept_def:
+                url = self.start_urls[0] + "?" + urlencode(self.querystring) + "&srsearch=" + key
+                yield Request(url,
+                              callback=self.parse,
+                              headers=HEADERS,
+                              meta={'proxy': self.meta_proxy, 'concept': concept}
+                              )
 
     def parse(self, response):
         if response.url == 'exception':
@@ -81,7 +78,29 @@ class WikiSpider(scrapy.Spider):
         item = PageItem()
         item["title"] = res["title"]
         item["pageid"] = res["pageid"]
-        # TODO,得到的只是图片名字，还不是url
-        item["images"] = res["images"]
+        # TODO,得到的只是图片名字，还不是url, 根据图片名字去找对应的图片URL
+        img_api = "https://en.wikipedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=Image:"
+        img_urls = []
+        for img_name in res["images"]:
+            yield Request(img_api + img_name,
+                          callback=self.img_parse,
+                          headers=HEADERS,
+                          meta={'proxy': self.meta_proxy, 'concept': response.meta["concept"]}
+                          )
+        item["images"] = img_urls
         item["wikitext"] = res["wikitext"]
         yield item
+
+    def img_parse(self, response):
+        # proxy_handler = urllib.request.ProxyHandler({
+        #     'http': self.meta_proxy,
+        #     'https': "https://127.0.0.1:1080"
+        # })  # 设置对应的代理服务器信息
+        # opener = urllib.request.build_opener(proxy_handler, urllib.request.HTTPHandler)  # 创建一个自定义的opener对象
+        # urllib.request.install_opener(opener)  # 创建全局默认的opener对象
+        # req = urllib.request.Request(url, headers=HEADERS)
+        # response = urllib.request.urlopen(req).read().decode("utf-8")
+        item = ImageItem()
+        item["concept"] = response.meta["concept"]
+        item["url"] = response["query"]["pages"]["-1"]["imageinfo"]["url"]
+        return item
