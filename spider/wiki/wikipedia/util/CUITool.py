@@ -53,13 +53,13 @@ class CUITool:
         self.cursor.close()
         self.connection.close()
 
-    def insert_batch(self, data):
+    def insert_batch(self, data, sql):
         """
+        :param sql:
         :param data: ((cui, url), (cui, url), ...)
         :return:
         """
         try:
-            sql = "INSERT INTO mrconimg(concept, url) VALUES (%s,%s)"
             self.cursor.executemany(sql, data)
             self.connection.commit()
         except Exception as e:
