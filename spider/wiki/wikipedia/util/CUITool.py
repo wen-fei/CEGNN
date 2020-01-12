@@ -18,6 +18,7 @@ class CUITool:
     """
     MySQL related tool
     """
+
     def __init__(self):
         try:
             self.connection = pymysql.connect(host=HOST,
@@ -51,3 +52,16 @@ class CUITool:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cursor.close()
         self.connection.close()
+
+    def insert_batch(self, data):
+        """
+        :param data: ((cui, url), (cui, url), ...)
+        :return:
+        """
+        try:
+            sql = "INSERT INTO mrconimg(concept, url) VALUES (%s,%s)"
+            self.cursor.executemany(sql, data)
+            self.connection.commit()
+        except Exception as e:
+            logger.error("insert data into db error.", e)
+        return self.cursor.fetchone()
