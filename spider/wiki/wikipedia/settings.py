@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'wikipedia.spiders'
 LOG_LEVEL = 'DEBUG'
 to_day = datetime.datetime.now()
 log_file_path = 'log/scrapy_{}_{}_{}.log'.format(to_day.year, to_day.month, to_day.day)
-LOG_FILE = log_file_path
+# LOG_FILE = log_file_path
 
 # middleware
 DOWNLOADER_MIDDLEWARES = {
