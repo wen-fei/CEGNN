@@ -9,7 +9,7 @@ import logging
 
 import pymysql
 
-from settings import HOST, USER, PASSWORD, DATABASE_NAME
+from ..settings import HOST, USER, PASSWORD, DATABASE_NAME
 
 logger = logging.getLogger(__name__)
 
