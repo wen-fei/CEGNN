@@ -16,18 +16,18 @@ class WikipediaPipeline(object):
         self.data_list_page = []
 
     def process_item(self, item, spider):
-        if isinstance(item is ImageItem):
-            sql = "INSERT INTO mrconimg(concept, url) VALUES (%s,%s)"
+        if isinstance(item, ImageItem):
+            sql = "INSERT INTO mrconimg(CUI, url) VALUES (%s,%s)"
             if len(self.data_list_image) == BATCH_SIZE:
                 self.db.insert_batch(self.data_list_image, sql)
                 self.data_list_image = []
             else:
-                self.data_list_image.append((item["CUI"], item["url"]))
-        elif isinstance(item is PageItem):
-            sql = "INSERT INTO mrcontext(concept, pageid, title, wikitext) VALUES (%s, %s, %s, %s)"
+                self.data_list_image.append((item["cui"], item["url"]))
+        elif isinstance(item, PageItem):
+            sql = "INSERT INTO mrcontext(CUI, pageid, title, wikitext) VALUES (%s, %s, %s, %s)"
             if len(self.data_list_page) == BATCH_SIZE:
                 self.db.insert_batch(self.data_list_page, sql)
                 self.data_list_page = []
             else:
-                self.data_list_page.append((item["CUI"], item["pageid"], item["title"], item["wikitext"]))
+                self.data_list_page.append((item["cui"], item["pageid"], item["title"], item["wikitext"]))
         return item
