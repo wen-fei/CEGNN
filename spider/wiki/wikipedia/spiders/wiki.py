@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import urllib
 from urllib.parse import urlencode
 import scrapy
 from scrapy.http import Request
 from items import PageItem, ImageItem
 from settings import HEADERS
 from util.CUITool import CUITool
-import urllib.request
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +74,7 @@ class WikiSpider(scrapy.Spider):
     def sub_parse(self, response):
         res = json.loads(response.body_as_unicode())
         item = PageItem()
+        item["cui"] = response.meta["concept"]
         item["title"] = res["title"]
         item["pageid"] = res["pageid"]
         # TODO,得到的只是图片名字，还不是url, 根据图片名字去找对应的图片URL
@@ -92,15 +91,7 @@ class WikiSpider(scrapy.Spider):
         yield item
 
     def img_parse(self, response):
-        # proxy_handler = urllib.request.ProxyHandler({
-        #     'http': self.meta_proxy,
-        #     'https': "https://127.0.0.1:1080"
-        # })  # 设置对应的代理服务器信息
-        # opener = urllib.request.build_opener(proxy_handler, urllib.request.HTTPHandler)  # 创建一个自定义的opener对象
-        # urllib.request.install_opener(opener)  # 创建全局默认的opener对象
-        # req = urllib.request.Request(url, headers=HEADERS)
-        # response = urllib.request.urlopen(req).read().decode("utf-8")
         item = ImageItem()
-        item["concept"] = response.meta["concept"]
+        item["cui"] = response.meta["concept"]
         item["url"] = response["query"]["pages"]["-1"]["imageinfo"]["url"]
         return item
