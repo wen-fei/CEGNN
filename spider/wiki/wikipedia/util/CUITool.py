@@ -40,12 +40,23 @@ class CUITool:
     def query_batch(self, cuis):
         """
         批量查询，效率更高
+
         :param cuis: cui tuple，format as ((cui1), (cui2), ...)
         :return:
         """
+        results = {}
         try:
             sql = "SELECT CUI, STR FROM `mrconso_eng` where CUI=%s"
-            self.cursor.executemany(sql, cuis)
+            # 弃用，有Bug，当返回结果只有一行的时候返回empty
+            # TODO, 本质还是调用循环，效率没有变高，而且有Bug
+            # self.cursor.executemany(sql, cuis)
+            # return self.cursor.fetchall()
+            for cui in cuis:
+                self.cursor.execute(sql, cui)
+                result = self.cursor.fetchone()
+                if result is not None:
+                    results[result[0]] = result[1]
+            return results
         except:
             logger.error("query_batch function error!")
 
@@ -62,6 +73,5 @@ class CUITool:
         try:
             self.cursor.executemany(sql, data)
             self.connection.commit()
-        except Exception as e:
-            logger.error("insert data into db error.", e)
-        return self.cursor.fetchone()
+        except:
+            logger.error("insert data into db error.")
