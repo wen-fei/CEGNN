@@ -15,7 +15,7 @@ class WikipediaItem(scrapy.Item):
 
 
 class PageItem(scrapy.Item):
-    cui = scrapy.Field
+    cui = scrapy.Field()
     title = scrapy.Field()
     pageid = scrapy.Field()
     images = scrapy.Field()
