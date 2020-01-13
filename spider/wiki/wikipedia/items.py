@@ -25,3 +25,5 @@ class PageItem(scrapy.Item):
 class ImageItem(scrapy.Item):
     cui = scrapy.Field()
     url = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
