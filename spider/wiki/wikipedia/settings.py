@@ -40,7 +40,8 @@ RETRY_TIMES = 1
 ITEM_PIPELINES = {
     'wikipedia.pipelines.WikipediaPipeline': 300,
 }
-
+# ITEM_PIPELINES = {'scrapy.contrib.pipeline.images.ImagesPipeline': 1}
+# IMAGES_STORE = "images/"
 HEADERS = {
     "Accept": "*/*",
     "Accept-Encoding": "gzip,deflate",
@@ -63,6 +64,6 @@ HOST = "localhost"
 USER = "root"
 PASSWORD = "123456"
 DATABASE_NAME = "umls_subset"
-BATCH_SIZE = 2000  # batch sql size
+BATCH_SIZE = 1000  # batch sql size
 
 LOG_LEVEL= 'INFO'
