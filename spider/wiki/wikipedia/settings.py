@@ -63,3 +63,4 @@ HOST = "localhost"
 USER = "root"
 PASSWORD = "123456"
 DATABASE_NAME = "umls_subset"
+BATCH_SIZE = 2000  # batch sql size
