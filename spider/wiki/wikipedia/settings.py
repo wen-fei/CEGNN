@@ -54,7 +54,7 @@ HEADERS = {
 # 反爬虫策略
 COOKIES_ENABLED = False
 AUTOTHROTTLE_ENABLED = True  # 自动限速
-DOWNLOAD_DELAY = 2  # 爬取速度，单位s
+DOWNLOAD_DELAY = 1  # 爬取速度，单位s
 REDIRECT_ENABLED = False  # 关闭重定向
 AUTOTHROTTLE_MAX_DELAY = 10  # 默认60
 
@@ -64,6 +64,7 @@ HOST = "localhost"
 USER = "root"
 PASSWORD = "123456"
 DATABASE_NAME = "umls_subset"
-BATCH_SIZE = 1000  # batch sql size
+BATCH_SIZE_PAGE = 50  # batch sql size
+BATCH_SIZE_IMAGE = 3000
 
 LOG_LEVEL= 'INFO'
