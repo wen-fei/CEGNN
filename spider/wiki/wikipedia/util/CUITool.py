@@ -29,7 +29,7 @@ class CUITool:
                                               charset="utf8"
                                               )
         except:
-            logger.info("MySQL database connect error... please check CUITool.py")
+            logger.error("MySQL database connect error... please check CUITool.py")
         self.cursor = self.connection.cursor()
 
     def query_one(self, cui):
@@ -57,8 +57,8 @@ class CUITool:
                 if result is not None:
                     results[result[0]] = result[1]
             return results
-        except:
-            logger.error("query_batch function error!")
+        except Exception as e:
+            logger.error("query_batch function error!", e)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cursor.close()
@@ -73,5 +73,5 @@ class CUITool:
         try:
             self.cursor.executemany(sql, data)
             self.connection.commit()
-        except:
-            logger.error("insert data into db error.")
+        except Exception as e:
+            logger.error("insert data into db error.", e)
