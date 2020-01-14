@@ -52,12 +52,12 @@ class RequestsRetryMiddleware(RetryMiddleware):
         # 捕获几乎所有的异常
         if isinstance(exception, self.ALL_EXCEPTIONS):
             # 在日志中打印异常类型
-            logger.debug('Got exception: %s' % exception)
+            logger.error('Got exception: %s' % exception)
             # 随意封装一个response，返回给spider
             response = HtmlResponse(url='exception')
             return response
         # 打印出未捕获到的异常
-        logger.debug('not contained exception: %s' % exception)
+        logger.error('not contained exception: %s' % exception)
 
 
 class UserAgentMiddleware(UserAgentMiddleware):
