@@ -57,49 +57,61 @@ class WikiSpider(scrapy.Spider):
 
     def parse(self, response):
         if response.url == 'exception':
-            logger.info('concept %s crawl process meets exception' % response.meta["concept"])
+            logger.error('concept %s crawl process meets exception' % response.meta["concept"])
         if response.url == '4050':
-            logger.info('concept %s crawl process meets exception' % response.meta["concept"])
-        res = json.loads(response.body_as_unicode())
+            logger.error('concept %s crawl process meets exception' % response.meta["concept"])
+        text = response.body_as_unicode()
+
         try:
-            search_list = res["query"]["search"]
-            if len(search_list) > 0:
-                title = search_list[0]["title"]
-                true_url = self.api_url + "?" + urlencode(self.parsestring) + "&page=" + title
-                yield Request(true_url,
-                              callback=self.sub_parse,
-                              headers=HEADERS,
-                              meta={'proxy': self.meta_proxy, 'concept': response.meta["concept"]}
-                              )
-            else:
-                # 查询不到结果
-                logger.info('concept %s crawl process meets exception' % response.meta["concept"])
+            if text:
+                res = json.loads(text)
+                if "query" in res:
+                    if "search" in res["query"]:
+                        search_list = res["query"]["search"]
+                        if len(search_list) > 0:
+                            if "title" in search_list[0]:
+                                title = search_list[0]["title"]
+                                true_url = self.api_url + "?" + urlencode(self.parsestring) + "&page=" + title
+                                yield Request(true_url,
+                                              callback=self.sub_parse,
+                                              headers=HEADERS,
+                                              meta={'proxy': self.meta_proxy, 'concept': response.meta["concept"]}
+                                              )
+                    else:
+                        # 查询不到结果
+                        logger.error('concept %s crawl process meets exception' % response.meta["concept"])
         except Exception as e:
-            logger.info("parse error: ", e)
+            logger.error("parse error: ", e)
 
     def sub_parse(self, response):
-        res = json.loads(response.body_as_unicode())
+        text = response.body_as_unicode()
         try:
-            if res:
+            if text:
+                res = json.loads(text)
                 item = PageItem()
                 item["cui"] = response.meta["concept"]
-                item["title"] = res["parse"]["title"]
-                item["pageid"] = res["parse"]["pageid"]
-                # TODO,得到的只是图片名字，还不是url, 根据图片名字去找对应的图片URL
-                img_api = "https://en.wikipedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=Image:"
-                img_urls = []
-                for img_name in res["parse"]["images"]:
-                    yield Request(img_api + img_name,
-                                  callback=self.img_parse,
-                                  headers=HEADERS,
-                                  meta={'proxy': self.meta_proxy, 'concept': response.meta["concept"]}
-                                  )
-                item["images"] = img_urls
-                wikitext = res["parse"]["wikitext"]
-                item["wikitext"] = self.clean_text(wikitext)
-                yield item
+                if "parse" in res:
+                    if "title" in res["parse"]:
+                        item["title"] = res["parse"]["title"]
+                    if "pageid" in res["parse"]:
+                        item["pageid"] = res["parse"]["pageid"]
+                    # TODO,得到的只是图片名字，还不是url, 根据图片名字去找对应的图片URL
+                    img_api = "https://en.wikipedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=Image:"
+                    img_urls = []
+                    if "images" in res["parse"]:
+                        for img_name in res["parse"]["images"]:
+                            yield Request(img_api + img_name,
+                                          callback=self.img_parse,
+                                          headers=HEADERS,
+                                          meta={'proxy': self.meta_proxy, 'concept': response.meta["concept"]}
+                                          )
+                    item["images"] = img_urls
+                    if "wikitext" in res["parse"]:
+                        wikitext = res["parse"]["wikitext"]
+                        item["wikitext"] = self.clean_text(wikitext)
+                    yield item
         except Exception as e:
-            logger.info("sub_parse error: ", e)
+            logger.error("sub_parse error: ", e)
 
     def img_parse(self, response):
         text = response.body_as_unicode()
@@ -108,17 +120,19 @@ class WikiSpider(scrapy.Spider):
             if text:
                 res = json.loads(text)
                 item["cui"] = response.meta["concept"]
-                pages = res["query"]["pages"]
-                pageid = ""
-                for key in pages.keys():
-                    pageid = key
-                page = pages[pageid]
-                if "imageinfo" in page.keys():
-                    item["url"] = page["imageinfo"][0]["url"]
-                    item["image_urls"] = page["imageinfo"][0]["url"]
-                    yield item
+                if "query" in res:
+                    if "pages" in res["query"]:
+                        pages = res["query"]["pages"]
+                        pageid = ""
+                        for key in pages.keys():
+                            pageid = key
+                        page = pages[pageid]
+                        if "imageinfo" in page.keys():
+                            item["url"] = page["imageinfo"][0]["url"]
+                            item["image_urls"] = page["imageinfo"][0]["url"]
+                            yield item
         except Exception as e:
-            logger.info("img_parse error: ", e)
+            logger.error("img_parse error: ", e)
 
     def clean_text(self, wikitext):
         wikitext = self.removeNonWordChar(wikitext)
@@ -126,4 +140,4 @@ class WikiSpider(scrapy.Spider):
 
     # remove non-word chars
     def removeNonWordChar(self, inputString):
-        return re.sub(r"[^\w]", "", inputString)  # non [a-zA-Z0-9_]
+        return re.sub(r"[^\w]", " ", inputString)  # non [a-zA-Z0-9_]
