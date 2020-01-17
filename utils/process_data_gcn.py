@@ -6,13 +6,19 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 import csv
+import itertools
+import logging
 import os
 import pickle
+import time
+from collections import Counter
 
+import gensim as gensim
 import numpy as np
 
 from config import DefaultConfig
 
+logger = logging.getLogger(__name__)
 opt = DefaultConfig()
 DATA_PATH = "/home/gp/workhome/biyesheji/data/"
 
@@ -21,6 +27,87 @@ def transform_data(path=DATA_PATH, dataset="pico_1225"):
     """process pico dataset for gcn"""
     print('Loading {} dataset...'.format(dataset))
     tokens, cuis, sentences, labels = load_pico_data("{}{}".format(path, dataset))
+    # just word embedding
+    tokens_new = pad_sentences_or_cuis(tokens, padding_str="<PAD/>", maxlen=30)
+    cuis = pad_sentences_or_cuis(cuis, padding_str="C0000000", maxlen=150)
+    cuis_new = [[int(cui[1:]) if (cui != "NULL" and cui != "") else 0 for cui in line] for line in cuis]
+    vocabulary, vocabulary_inv = build_vocab(tokens_new, cuis_new)
+    # TODO, 需要的是句子向量
+    # references https://blog.csdn.net/asialee_bird/article/details/100124565
+
+
+def customize_word_embeddings(path, dim):
+    tic = time.time()
+    logger.info(
+        'Please wait ... (it could take a while to load the word embedding file : {})'.format(path))
+    model = gensim.models.KeyedVectors.load_word2vec_format(path, binary=True)
+    logger.info('Done.  (time used: {:.1f}s)\n'.format(time.time() - tic))
+    embedding_weights = {}
+    found_cnt = 0
+    notfound_cnt = 0
+    words = []
+    if not os.path.exists(opt.vocabulary_store):
+        logging.error("vocabulary file is not found")
+        return
+    with open(opt.vocabulary_store, 'rb') as data_f:
+        vocabulary, vocabulary_inv = pickle.load(data_f)
+    # TODO，不需要生成序列了，直接生成句子向量？
+    for idx, word in vocabulary_inv.items():
+        words.append(word)
+        if word in model.vocab:
+            embedding_weights[idx] = model.word_vec(word)
+            found_cnt += 1
+        else:
+            embedding_weights[idx] = np.random.uniform(-0.25, 0.25, dim).astype(np.float32)
+            notfound_cnt += 1
+    logger.info("found_cnt size is :" + str(found_cnt),
+                "not found_cnt size is :" + str(notfound_cnt),
+                "embedding_weights size is %s " % (len(embedding_weights)))
+    with open(opt.word_embeddings, 'wb') as f:
+        pickle.dump(embedding_weights, f)
+    return embedding_weights
+
+
+def build_vocab(sentences=None):
+    """
+    Builds a vocabulary mapping from word to index based on the sentences.
+    Returns vocabulary mapping and inverse vocabulary mapping.
+    """
+    # Build vocabulary
+    if os.path.exists(opt.vocabulary_store):
+        with open(opt.vocabulary_store, 'rb') as f:
+            return pickle.load(f)
+    else:
+        word_counts = Counter(itertools.chain(*sentences))
+        # Mapping from index to word
+        word_dict = word_counts.most_common()
+        vocabulary_inv = [x[0] for x in word_dict]  # {index:str}
+        vocabulary_inv.append("UNKNOWN")
+        # Mapping from word to index
+        vocabulary = {x: i for i, x in enumerate(vocabulary_inv)}  # {str:index}
+        vocabulary_inv = {i: x for x, i in vocabulary.items()}
+        with open(opt.vocabulary_store, "wb") as f:
+            pickle.dump((vocabulary, vocabulary_inv), f)
+        return vocabulary, vocabulary_inv
+
+
+def pad_sentences_or_cuis(sources, padding_token="", maxlen=100):
+    """
+    Pads all cuis to the same length. The length is 150.（90% of cuis is shorter than 150 ）
+    Pads all sentences to the same length. The length is 35.（92% of cuis is shorter than 150 ）
+    Returns padded cuis.
+    """
+    num_samples = len(sources)
+    padded_sources = []
+    for i in range(num_samples):
+        source = sources[i]
+        if len(source) > maxlen:
+            new_source = source[:maxlen]
+        else:
+            num_padding = maxlen - len(source)
+            new_source = source + [padding_token] * num_padding
+        padded_sources.append(new_source)
+    return padded_sources
 
 
 def load_pico_data(self, path, use_shuffle=False, use_drop=False):
