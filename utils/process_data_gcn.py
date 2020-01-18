@@ -32,8 +32,26 @@ def transform_data(path=DATA_PATH, dataset="pico_1225"):
     cuis = pad_sentences_or_cuis(cuis, padding_str="C0000000", maxlen=150)
     cuis_new = [[int(cui[1:]) if (cui != "NULL" and cui != "") else 0 for cui in line] for line in cuis]
     vocabulary, vocabulary_inv = build_vocab(tokens_new, cuis_new)
+    word_embeddings = customize_word_embeddings(opt.word_embeddings, opt.word_embeddings_dim)
     # TODO, 需要的是句子向量
     # references https://blog.csdn.net/asialee_bird/article/details/100124565
+    # 根据vocabulary_inv生成句子向量
+    tokens_embedding = tokens_to_embeddings(tokens_new, vocabulary, word_embeddings)
+
+
+def tokens_to_embeddings(tokens, vocabulary, embeddings):
+    """ build sentence embedding"""
+    sentences_vec = []
+    for line in tokens:
+        sen_vec = np.zeros(opt.word_embeddings_dim).reshape((1, opt.word_embeddings_dim))
+        count = 0
+        for token in line:
+            word_embedding = embeddings[vocabulary[token]]
+            sen_vec += word_embedding
+            count += 1
+        sen_vec /= count
+        sentences_vec.append(sen_vec)
+    return sentences_vec
 
 
 def customize_word_embeddings(path, dim):
@@ -51,7 +69,6 @@ def customize_word_embeddings(path, dim):
         return
     with open(opt.vocabulary_store, 'rb') as data_f:
         vocabulary, vocabulary_inv = pickle.load(data_f)
-    # TODO，不需要生成序列了，直接生成句子向量？
     for idx, word in vocabulary_inv.items():
         words.append(word)
         if word in model.vocab:
