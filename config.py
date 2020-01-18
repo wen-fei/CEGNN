@@ -13,6 +13,8 @@ path = os.path.abspath("..")
 
 
 class DefaultConfig(object):
+
+
     """ default parameters and settings """
     words_save = "materials/words.dat"
     cuis_save = "materials/cuis.dat"
@@ -20,3 +22,4 @@ class DefaultConfig(object):
     vocabulary_store = "materials/vocabulary_store.dat"
 
     word_embeddings = "materials/PubMed_extracted.pl"
+    word_embeddings_dim = 200
