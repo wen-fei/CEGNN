@@ -20,7 +20,7 @@ from config import DefaultConfig
 
 logger = logging.getLogger(__name__)
 opt = DefaultConfig()
-DATA_PATH = "/home/gp/workhome/biyesheji/data/"
+DATA_PATH = "G:\\CEGNN\\data\\"
 
 
 def transform_data(path=DATA_PATH, dataset="pico_1225"):
@@ -28,10 +28,10 @@ def transform_data(path=DATA_PATH, dataset="pico_1225"):
     print('Loading {} dataset...'.format(dataset))
     tokens, cuis, sentences, labels = load_pico_data("{}{}".format(path, dataset))
     # just word embedding
-    tokens_new = pad_sentences_or_cuis(tokens, padding_str="<PAD/>", maxlen=30)
-    cuis = pad_sentences_or_cuis(cuis, padding_str="C0000000", maxlen=150)
+    tokens_new = pad_sentences_or_cuis(tokens, padding_token="<PAD/>", maxlen=30)
+    cuis = pad_sentences_or_cuis(cuis, padding_token="C0000000", maxlen=150)
     cuis_new = [[int(cui[1:]) if (cui != "NULL" and cui != "") else 0 for cui in line] for line in cuis]
-    vocabulary, vocabulary_inv = build_vocab(tokens_new, cuis_new)
+    vocabulary, vocabulary_inv = build_vocab(tokens_new)
     word_embeddings = customize_word_embeddings(opt.word_embeddings, opt.word_embeddings_dim)
     # TODO, 需要的是句子向量
     # references https://blog.csdn.net/asialee_bird/article/details/100124565
@@ -103,7 +103,7 @@ def build_vocab(sentences=None):
         # Mapping from word to index
         vocabulary = {x: i for i, x in enumerate(vocabulary_inv)}  # {str:index}
         vocabulary_inv = {i: x for x, i in vocabulary.items()}
-        with open(opt.vocabulary_store, "wb") as f:
+        with open("../" + opt.vocabulary_store, "wb") as f:
             pickle.dump((vocabulary, vocabulary_inv), f)
         return vocabulary, vocabulary_inv
 
@@ -127,7 +127,7 @@ def pad_sentences_or_cuis(sources, padding_token="", maxlen=100):
     return padded_sources
 
 
-def load_pico_data(self, path, use_shuffle=False, use_drop=False):
+def load_pico_data(path, use_shuffle=False, use_drop=False):
     files = os.listdir(path)
     sentences_tokens = []
     sentences_cuis = []
@@ -140,31 +140,31 @@ def load_pico_data(self, path, use_shuffle=False, use_drop=False):
         sentences2tokens = []
         sentences2cuis = []
         file_labels = []
-        with open(os.path.join(path, file)) as f:
+        with open(os.path.join(path, file), 'r') as f:
             csv_reader = csv.reader(f)
             for row in csv_reader:
                 sentences.append(row[0])
                 tokens = row[1].split(" ")
                 sentences2tokens.append(tokens)
-                cuis1 = row[2].split("|")
-                sentences2cuis.append(cuis1)
+                cuis_t = row[2].split("|")
+                sentences2cuis.append(cuis_t)
                 file_labels.append(label)
-                for word, cui in zip(tokens, cuis1):
+                for word, cui in zip(tokens, cuis_t):
                     word2cui[word] = cui
                 if use_shuffle:
                     np.random.seed(1)
                     sentence2 = tokens.copy()
                     np.random.shuffle(sentence2)
                     sentences2tokens.append(sentence2)
-                    cuis2 = cuis1.copy()
-                    np.random.shuffle(cuis2)
-                    sentences2cuis.append(cuis2)
+                    cuis_t2 = cuis_t.copy()
+                    np.random.shuffle(cuis_t2)
+                    sentences2cuis.append(cuis_t2)
                     file_labels.append(label)
                 if use_drop:
-                    sentence3 = self.drop_word(tokens, "<PAD/>")
+                    sentence3 = drop_word(tokens, "<PAD/>")
                     sentences2tokens.append(sentence3)
-                    cuis3 = self.drop_word(cuis1, "C0000000")
-                    sentences2cuis.append(cuis3)
+                    cuis_t3 = drop_word(cuis_t, "C0000000")
+                    sentences2cuis.append(cuis_t3)
                     file_labels.append(label)
 
         sentences_tokens = sentences_tokens + sentences2tokens
@@ -172,8 +172,20 @@ def load_pico_data(self, path, use_shuffle=False, use_drop=False):
         sentences_origin = sentences_origin + sentences
         labels = labels + file_labels
     word2cui["</PAD>"] = "C0000000"
-    with open(opt.word2cui, 'wb') as f:
+    with open("../" + opt.word2cui, 'wb') as f:
         pickle.dump(word2cui, f)
     d = {"P": 0, "I": 1, "O": 2, "N": 3}
     labels = [d[x] for x in labels]
     return sentences_tokens, sentences_cuis, sentences_origin, labels
+
+
+def drop_word(line, c):
+    np.random.seed(1)
+    random_list = np.random.randint(0, len(line), size=len(line) // 10)
+    for i in random_list:
+        line[i] = c
+    return line
+
+
+if __name__ == '__main__':
+    transform_data(path=DATA_PATH)
