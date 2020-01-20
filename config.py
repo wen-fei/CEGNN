@@ -9,17 +9,16 @@ import datetime
 import os
 
 today = datetime.date.today()
-path = os.path.abspath("..")
 
 
 class DefaultConfig(object):
-
-
     """ default parameters and settings """
-    words_save = "materials/words.dat"
-    cuis_save = "materials/cuis.dat"
-    word2cui = "materials/word2cui.dat"
-    vocabulary_store = "materials/vocabulary_store.dat"
+    path = os.path.dirname(os.path.abspath(__file__))
+    words_save = path + "/materials/words.dat"
+    cuis_save = path + "/materials/cuis.dat"
+    word2cui = path + "/materials/word2cui.dat"
+    vocabulary_store = path + "/materials/vocabulary_store.dat"
 
-    word_embeddings = "materials/PubMed_extracted.pl"
+    pred_PubMed_vector = path + "/materials/PubMed-shuffle-win-30.bin"
+    word_embeddings = path + "/materials/PubMed_extracted.pl"
     word_embeddings_dim = 200
