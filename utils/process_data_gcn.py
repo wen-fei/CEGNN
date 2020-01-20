@@ -21,6 +21,7 @@ from config import DefaultConfig
 logger = logging.getLogger(__name__)
 opt = DefaultConfig()
 DATA_PATH = "G:\\CEGNN\\data\\"
+print(opt.words_save)
 
 
 def transform_data(path=DATA_PATH, dataset="pico_1225"):
@@ -32,11 +33,12 @@ def transform_data(path=DATA_PATH, dataset="pico_1225"):
     cuis = pad_sentences_or_cuis(cuis, padding_token="C0000000", maxlen=150)
     cuis_new = [[int(cui[1:]) if (cui != "NULL" and cui != "") else 0 for cui in line] for line in cuis]
     vocabulary, vocabulary_inv = build_vocab(tokens_new)
-    word_embeddings = customize_word_embeddings(opt.word_embeddings, opt.word_embeddings_dim)
+    word_embeddings = customize_word_embeddings(opt.pred_PubMed_vector, opt.word_embeddings_dim)
     # TODO, 需要的是句子向量
     # references https://blog.csdn.net/asialee_bird/article/details/100124565
     # 根据vocabulary_inv生成句子向量
     tokens_embedding = tokens_to_embeddings(tokens_new, vocabulary, word_embeddings)
+    print(tokens_embedding)
 
 
 def tokens_to_embeddings(tokens, vocabulary, embeddings):
@@ -55,6 +57,9 @@ def tokens_to_embeddings(tokens, vocabulary, embeddings):
 
 
 def customize_word_embeddings(path, dim):
+    if opt.word_embeddings:
+        with open(opt.word_embeddings, 'rb') as f:
+            return pickle.load(f)
     tic = time.time()
     logger.info(
         'Please wait ... (it could take a while to load the word embedding file : {})'.format(path))
@@ -103,7 +108,7 @@ def build_vocab(sentences=None):
         # Mapping from word to index
         vocabulary = {x: i for i, x in enumerate(vocabulary_inv)}  # {str:index}
         vocabulary_inv = {i: x for x, i in vocabulary.items()}
-        with open("../" + opt.vocabulary_store, "wb") as f:
+        with open(opt.vocabulary_store, "wb") as f:
             pickle.dump((vocabulary, vocabulary_inv), f)
         return vocabulary, vocabulary_inv
 
@@ -172,7 +177,7 @@ def load_pico_data(path, use_shuffle=False, use_drop=False):
         sentences_origin = sentences_origin + sentences
         labels = labels + file_labels
     word2cui["</PAD>"] = "C0000000"
-    with open("../" + opt.word2cui, 'wb') as f:
+    with open(opt.word2cui, 'wb') as f:
         pickle.dump(word2cui, f)
     d = {"P": 0, "I": 1, "O": 2, "N": 3}
     labels = [d[x] for x in labels]
