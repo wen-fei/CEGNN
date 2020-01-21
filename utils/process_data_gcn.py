@@ -15,12 +15,31 @@ from collections import Counter
 
 import gensim as gensim
 import numpy as np
-
+import pandas as pd
 from config import DefaultConfig
+import scipy.sparse as sp
 
 logger = logging.getLogger(__name__)
 opt = DefaultConfig()
 DATA_PATH = "G:\\CEGNN\\data\\"
+
+
+def transform_node_features(path="../materials/", dataset="umls.embeddings"):
+    print('Loading {} dataset...'.format(dataset))
+    model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
+    cuis = np.genfromtxt(opt.cuis_all, dtype=np.dtype(str))
+    cuis = np.array(cuis[:, 0], dtype=np.str)
+    embedding_weights = []
+    found_cnt = 0
+    notfound_cnt = 0
+    for cui in cuis:
+        if cui in model.vocab:
+            embedding_weights.append(model.word_vec(cui))
+            found_cnt += 1
+        else:
+            embedding_weights.append(np.random.uniform(-0.25, 0.25, 200).astype(np.float32))
+            notfound_cnt += 1
+    cuis_features = np.insert(np.array(embedding_weights), 0, values=cuis, axis=1)
 
 
 
@@ -195,4 +214,4 @@ def drop_word(line, c):
 
 
 if __name__ == '__main__':
-    transform_data(path=DATA_PATH)
+    transform_node_features()
