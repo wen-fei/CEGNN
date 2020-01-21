@@ -21,7 +21,7 @@ from config import DefaultConfig
 logger = logging.getLogger(__name__)
 opt = DefaultConfig()
 DATA_PATH = "G:\\CEGNN\\data\\"
-print(opt.words_save)
+
 
 
 def transform_data(path=DATA_PATH, dataset="pico_1225"):
@@ -38,7 +38,9 @@ def transform_data(path=DATA_PATH, dataset="pico_1225"):
     # references https://blog.csdn.net/asialee_bird/article/details/100124565
     # 根据vocabulary_inv生成句子向量
     tokens_embedding = tokens_to_embeddings(tokens_new, vocabulary, word_embeddings)
-    print(tokens_embedding)
+    # 这么处理无法用于gcn，gcn输入的格式包括俩文件，一个是论文特征，另一个是论文引用网络
+    # 这么处理(句子embedding用不到，需要重新处理node 特征)可以用于node id分类，但不能用于句子分类
+    return tokens_embedding
 
 
 def tokens_to_embeddings(tokens, vocabulary, embeddings):
