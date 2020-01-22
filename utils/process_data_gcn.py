@@ -26,12 +26,16 @@ DATA_PATH = "G:\\CEGNN\\data\\"
 
 def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     print('Loading {} dataset...'.format(dataset))
-    model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
-    cuis = np.genfromtxt(opt.cuis_all, dtype=np.dtype(str))
-    cuis = np.array(cuis[:, 0], dtype=np.str)
+    # cuis = np.genfromtxt(opt.cuis_all, dtype=np.dtype(str))
+    # cuis = np.array(cuis[:, 0], dtype=np.str)
+    # cui_text = np.array(cuis[:, 1], dtype=np.str)
+    # labels = np.array(cuis[:, 2], dtype=np.str)
+    cuis_df = pd.read_csv(opt.mrcuis, sep='\t')
+    cuis = cuis_df["CUI"]
     embedding_weights = []
     found_cnt = 0
     notfound_cnt = 0
+    model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
     for cui in cuis:
         if cui in model.vocab:
             embedding_weights.append(model.word_vec(cui))
@@ -39,8 +43,8 @@ def transform_node_features(path="../materials/", dataset="umls.embeddings"):
         else:
             embedding_weights.append(np.random.uniform(-0.25, 0.25, 200).astype(np.float32))
             notfound_cnt += 1
-    cuis_features = np.insert(np.array(embedding_weights), 0, values=cuis, axis=1)
-
+    cuis_df["embeddings"] = pd.Series(embedding_weights)
+    print("s")
 
 
 def transform_data(path=DATA_PATH, dataset="pico_1225"):
