@@ -38,10 +38,10 @@ def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
     for cui in cuis:
         if cui in model.vocab:
-            embedding_weights.append(model.word_vec(cui))
+            embedding_weights.append("\t".join(model.word_vec(cui)))
             found_cnt += 1
         else:
-            embedding_weights.append(np.random.uniform(-0.25, 0.25, 200).astype(np.float32))
+            embedding_weights.append("\t".join(np.random.uniform(-0.25, 0.25, 200).astype(np.float32)))
             notfound_cnt += 1
     cuis_df["embeddings"] = pd.Series(embedding_weights)
     print("s")
