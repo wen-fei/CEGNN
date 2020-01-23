@@ -24,6 +24,16 @@ opt = DefaultConfig()
 DATA_PATH = "G:\\CEGNN\\data\\"
 
 
+def remove_quote():
+    with open("../materials/umls.content2", "a+") as csvfile:
+        writer = csv.writer(csvfile)
+        with open("../materials/umls.content", 'r') as f:
+            csv_reader = csv.reader(f, delimiter="\t")
+            for row in csv_reader:
+                row = row.replace("\"", "")
+                writer.writerow(row)
+
+
 def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     print('Loading {} dataset...'.format(dataset))
     # cuis = np.genfromtxt(opt.cuis_all, dtype=np.dtype(str))
@@ -31,20 +41,26 @@ def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     # cui_text = np.array(cuis[:, 1], dtype=np.str)
     # labels = np.array(cuis[:, 2], dtype=np.str)
     cuis_df = pd.read_csv(opt.mrcuis, sep='\t')
+    cuis_df.columns = ['CUI', 'STR', 'TUI']
     cuis = cuis_df["CUI"]
     embedding_weights = []
     found_cnt = 0
     notfound_cnt = 0
     model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
     for cui in cuis:
+        cui = str(int(cui[1:]))
         if cui in model.vocab:
-            embedding_weights.append("\t".join(model.word_vec(cui)))
+            embedding = "\t".join(map(np.str, model.word_vec(cui).tolist()))
             found_cnt += 1
         else:
-            embedding_weights.append("\t".join(np.random.uniform(-0.25, 0.25, 200).astype(np.float32)))
+            embedding = "\t".join(np.random.uniform(-0.25, 0.25, 200).astype(np.str))
             notfound_cnt += 1
+        embedding_weights.append(embedding)
     cuis_df["embeddings"] = pd.Series(embedding_weights)
-    print("s")
+    cuis_df[["CUI", "embeddings", "TUI"]].to_csv("../materials/umls.content",
+                                                 header=False, index=False, sep="\t")
+    print("cui not find size is {}".format(notfound_cnt))
+    print("cui find size is {}".format(found_cnt))
 
 
 def transform_data(path=DATA_PATH, dataset="pico_1225"):
@@ -218,4 +234,5 @@ def drop_word(line, c):
 
 
 if __name__ == '__main__':
-    transform_node_features()
+    # transform_node_features()
+    remove_quote()
