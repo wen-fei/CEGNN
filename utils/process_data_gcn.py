@@ -13,7 +13,7 @@ import pickle
 import time
 from collections import Counter
 
-import gensim as gensim
+import gensim
 import numpy as np
 import pandas as pd
 from config import DefaultConfig
@@ -53,7 +53,7 @@ def transform_node_features(path="../materials/", dataset="umls.embeddings"):
             embedding = "\t".join(map(np.str, model.word_vec(cui).tolist()))
             found_cnt += 1
         else:
-            embedding = "\t".join(np.random.uniform(-0.25, 0.25, 200).astype(np.str))
+            embedding = "\t".join(np.random.uniform(-0.25, 0.25, 108).astype(np.str))
             notfound_cnt += 1
         embedding_weights.append(embedding)
     cuis_df["embeddings"] = pd.Series(embedding_weights)
@@ -234,5 +234,5 @@ def drop_word(line, c):
 
 
 if __name__ == '__main__':
-    # transform_node_features()
-    remove_quote()
+    transform_node_features()
+    # remove_quote()
