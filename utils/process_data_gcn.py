@@ -12,8 +12,7 @@ import os
 import pickle
 import time
 from collections import Counter
-
-import gensim
+from gensim.models import KeyedVectors
 import numpy as np
 import pandas as pd
 from config import DefaultConfig
@@ -46,7 +45,7 @@ def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     embedding_weights = []
     found_cnt = 0
     notfound_cnt = 0
-    model = gensim.models.KeyedVectors.load_word2vec_format(path + dataset, binary=True)
+    model = KeyedVectors.load_word2vec_format(path + dataset, binary=True)
     for cui in cuis:
         cui = str(int(cui[1:]))
         if cui in model.vocab:
@@ -104,7 +103,7 @@ def customize_word_embeddings(path, dim):
     tic = time.time()
     logger.info(
         'Please wait ... (it could take a while to load the word embedding file : {})'.format(path))
-    model = gensim.models.KeyedVectors.load_word2vec_format(path, binary=True)
+    model = KeyedVectors.load_word2vec_format(path, binary=True)
     logger.info('Done.  (time used: {:.1f}s)\n'.format(time.time() - tic))
     embedding_weights = {}
     found_cnt = 0
