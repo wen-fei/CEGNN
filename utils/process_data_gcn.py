@@ -23,16 +23,6 @@ opt = DefaultConfig()
 DATA_PATH = "G:\\CEGNN\\data\\"
 
 
-def remove_quote():
-    with open("../materials/umls.content2", "a+") as csvfile:
-        writer = csv.writer(csvfile)
-        with open("../materials/umls.content", 'r') as f:
-            csv_reader = csv.reader(f, delimiter="\t")
-            for row in csv_reader:
-                row = row.replace("\"", "")
-                writer.writerow(row)
-
-
 def transform_node_features(path="../materials/", dataset="umls.embeddings"):
     print('Loading {} dataset...'.format(dataset))
     # cuis = np.genfromtxt(opt.cuis_all, dtype=np.dtype(str))
