@@ -34,14 +34,15 @@ for drug in tqdm(root.xpath("db:drug[db:groups/db:group='approved']", namespaces
         state = "None"
     drug_interactions = drug.xpath("db:drug-interactions/db:drug-interaction", namespaces=ns)
     drug_content.append([drugbank_id, drugName, state, drugDescription])
-
     for t in drug_interactions:
         t_drugbank_id = t.find("db:drugbank-id", ns).text
         name = t.find("db:name", ns).text
         interaction = t.find("db:description", ns).text
-        drug_network.append([drugbank_id, t_drugbank_id, name, interaction])
+        drug_network.append([int(drugbank_id[2:]), int(t_drugbank_id[2:]), name, interaction, "1"])
+        # drug_network.append([drugbank_id, t_drugbank_id, name, interaction, "1"])
 drug_content = np.array(drug_content, dtype=np.str)
 drug_network = np.array(drug_network, dtype=np.str)
-np.savetxt("drugbank.content", drug_content, fmt="%s", delimiter=',', encoding="utf-8")
-np.savetxt("drugbank.cites", drug_network, fmt="%s", delimiter=',', encoding="utf-8")
-np.savetxt("drugbank_d2d.cites", drug_network[:, [0, 1]], fmt="%s", delimiter=",", encoding="utf-8")
+# np.savetxt("drugbank.content", drug_content, fmt="%s", delimiter=',', encoding="utf-8")
+# np.savetxt("drugbank.cites", drug_network, fmt="%s", delimiter=',', encoding="utf-8")
+# np.savetxt("drugbank_d2d.cites", drug_network[:, [0, 1]], fmt="%s", delimiter=" ", encoding="utf-8")
+np.savetxt("drugbank_d2d_LINE.cites", drug_network[:, [0, 1, 4]], fmt="%s", delimiter=" ", encoding="utf-8")
