@@ -8,7 +8,7 @@
 import pandas as pd
 
 umls_rel = pd.read_csv("../materials/umls/umls1.rel", delimiter="\t", encoding="GB2312", names=["CUI1", "CUI2", "REL"])
-umls_rel = umls_rel.applymap(lambda x: x.split("\"", ""))
+umls_rel = umls_rel[["CUI1", "CUI2"]].applymap(lambda x: int(x[1:]))
 cuis = list(pd.read_csv("../materials/umls/cuis_all.csv", names=["CUI"])["CUI"])
 umls_rel = umls_rel[(umls_rel["CUI1"].isin(cuis)) & (umls_rel["CUI2"].isin(cuis))]
 umls_rel["weight"] = 1
