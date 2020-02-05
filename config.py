@@ -12,7 +12,6 @@ today = datetime.date.today()
 
 
 class DefaultConfig(object):
-
     """ default parameters and settings """
     path = os.path.dirname(os.path.abspath(__file__))
     words_save = path + "/materials/words.dat"
@@ -20,6 +19,7 @@ class DefaultConfig(object):
     word2cui = path + "/materials/word2cui.dat"
     vocabulary_store = path + "/materials/vocabulary_store.dat"
     cuis_all = path + "/materials/cuis_all.csv"
+    mrcuis = path + "/materials/mrcuis.csv"
 
     pred_PubMed_vector = path + "/materials/PubMed-shuffle-win-30.bin"
     word_embeddings = path + "/materials/PubMed_extracted.pl"
