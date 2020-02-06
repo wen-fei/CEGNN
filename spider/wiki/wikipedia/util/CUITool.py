@@ -26,7 +26,7 @@ class CUITool:
                                               password=PASSWORD,
                                               db=DATABASE_NAME,
                                               port=3306,
-                                              charset="utf8"
+                                              charset="utf8mb4"
                                               )
         except:
             logger.error("MySQL database connect error... please check CUITool.py")
