@@ -228,3 +228,10 @@ dmypy.json
 .pyre/
 
 !/materials/PubMed-shuffle-win-30.bin
+!/papers/graph2vec/dataset/
+!/papers/graph2vec/features/
+!/materials/
+!/papers/pygcn/data/
+!/papers/pygcn/.idea/
+!.*/
+!/spider/wiki/wikipedia/crawls/
