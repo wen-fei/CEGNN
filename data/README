@@ -1,0 +1,9 @@
+This directory contains the a selection of the  dataset of pico sentences related to heart disease.
+
+The dataset contains four files:
+
+- PICO sentences
+	- P.csv, sentences of P label, 636 lines
+	- I.csv, sentences of I label, 760 lines
+	- O.csv, sentences of O label, 653 lines
+	- N.csv, negative samples, 649 lines
