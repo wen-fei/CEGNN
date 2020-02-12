@@ -51,4 +51,18 @@ def drugbank_renode():
                        index=False)
 
 
-drugbank_renode()
+def umls_renode():
+    node_node = pd.read_csv("G:\\CEGNN\\materials\\umls\\umls_rel_7600w.csv", delimiter="\t",
+                            encoding="utf-8", names=["node_1", "node_2"])
+    index_node = pd.read_csv("G:\\CEGNN\\utils\\umls_index2id_edges.csv",
+                             delimiter="\t", encoding="utf-8",
+                             names=["index", "node"])
+    node2index = {str(row["node"]): str(row["index"]) for _, row in index_node.iterrows()}
+    node_node = node_node[["node_1", "node_2"]].astype(str)
+    index2index = node_node[["node_1", "node_2"]].applymap(lambda x: node2index[x])
+    index2index.to_csv("umls_index2index_edges.csv", sep=",",
+                       encoding="utf-8", header=["node_1", "node_2"],
+                       index=False)
+
+
+umls_renode()
