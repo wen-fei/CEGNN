@@ -7,6 +7,8 @@
 """
 import pandas as pd
 import numpy as np
+import json
+import networkx as nx
 
 """
 transform data from node1, node2 to node1_index, node2_index
@@ -65,4 +67,13 @@ def umls_renode():
                        index=False)
 
 
-umls_renode()
+def drugbank_json():
+    graph = nx.read_edgelist(path="drugbank_index2index_edges_nohead.csv", delimiter=",",
+                             encoding="utf-8")
+    nodes = graph.nodes()
+    adjs = {node: [n for n in graph.neighbors(node)] for node in nodes}
+    with open("drugbank_features.json", "w", encoding='utf-8') as f:
+        json.dump(adjs, f)
+
+
+drugbank_json()
