@@ -15,8 +15,8 @@ transform data from node1, node2 to node1_index, node2_index
 """
 
 
-def drugbank():
-    data = pd.read_csv("G:\\CEGNN\\materials\\umls\\umls_rel_RLRQSIBCHD.csv", delimiter=" ",
+def drugbank_index2id():
+    data = pd.read_csv("G:\\CEGNN\\materials\\drugbank\\drugbank_d2d2.cites", delimiter=" ",
                        encoding="utf-8", names=["node_1", "node_2"])
     node_1 = data["node_1"].values.tolist()
     node_2 = data["node_2"].values.tolist()
@@ -28,14 +28,16 @@ def drugbank():
     index_node.to_csv("drugbank_index2id_edges.csv", sep="\t", encoding="utf-8", header=None, index=False)
 
 
-def umls():
-    data = pd.read_csv("G:\\CEGNN\\materials\\umls\\cuis_all.csv", delimiter=" ",
-                       encoding="utf-8", names=["node_1"])
-    nodes = data["node_1"].apply(lambda x: int(x[1:]))
-    data["index"] = nodes.index
-    data["node_1"] = nodes
-    data = data[["index", "node_1"]]
-    data.to_csv("umls_index2id_edges.csv", sep="\t",
+def umls_index2id():
+    data = pd.read_csv("G:\\CEGNN\\materials\\umls\\umls_rel_RLRQSIBCHD.csv", delimiter="\t",
+                       encoding="utf-8", names=["node_1", "node_2"])
+    node1 = set(data["node_1"])
+    node2 = set(data["node_2"])
+    nodes = pd.Series(list(node1.union(node2)))
+    node_index = pd.DataFrame()
+    node_index["index"] = nodes.index
+    node_index["node_1"] = nodes
+    node_index.to_csv("umls_index2id_RLRQSIBCHD_edges.csv", sep="\t",
                 encoding="utf-8", header=None, index=False)
 
 
@@ -54,15 +56,15 @@ def drugbank_renode():
 
 
 def umls_renode():
-    node_node = pd.read_csv("G:\\CEGNN\\materials\\umls\\umls_rel_7600w.csv", delimiter="\t",
+    node_node = pd.read_csv("G:\\CEGNN\\materials\\umls\\umls_rel_RLRQSIBCHD.csv", delimiter="\t",
                             encoding="utf-8", names=["node_1", "node_2"])
-    index_node = pd.read_csv("G:\\CEGNN\\utils\\umls_index2id_edges.csv",
+    index_node = pd.read_csv("umls_index2id_RLRQSIBCHD_edges.csv",
                              delimiter="\t", encoding="utf-8",
                              names=["index", "node"])
     node2index = {str(row["node"]): str(row["index"]) for _, row in index_node.iterrows()}
     node_node = node_node[["node_1", "node_2"]].astype(str)
     index2index = node_node[["node_1", "node_2"]].applymap(lambda x: node2index[x])
-    index2index.to_csv("umls_index2index_edges.csv", sep=",",
+    index2index.to_csv("umls_index2index_RLRQSIBCHD_edges.csv", sep=",",
                        encoding="utf-8", header=["node_1", "node_2"],
                        index=False)
 
@@ -85,4 +87,4 @@ def umls_features_json():
         json.dump(adjs, f)
 
 
-umls_features_json()
+umls_renode()
