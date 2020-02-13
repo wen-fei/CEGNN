@@ -67,7 +67,7 @@ def umls_renode():
                        index=False)
 
 
-def drugbank_json():
+def drugbank_features_json():
     graph = nx.read_edgelist(path="drugbank_index2index_edges_nohead.csv", delimiter=",",
                              encoding="utf-8")
     nodes = graph.nodes()
@@ -76,4 +76,13 @@ def drugbank_json():
         json.dump(adjs, f)
 
 
-drugbank_json()
+def umls_features_json():
+    graph = nx.read_edgelist(path="umls_index2index_edges_nohead.csv", delimiter=",",
+                             encoding="utf-8")
+    nodes = graph.nodes()
+    adjs = {node: [n for n in graph.neighbors(node)] for node in nodes}
+    with open("umls_features.json", "w", encoding='utf-8') as f:
+        json.dump(adjs, f)
+
+
+umls_features_json()
