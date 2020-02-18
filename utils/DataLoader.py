@@ -9,8 +9,11 @@ import csv
 import logging
 import os
 import pickle
+import time
 
+import gensim
 import numpy as np
+from tqdm import tqdm
 
 from config import DefaultConfig
 
@@ -30,7 +33,10 @@ class DataLoader:
     def __init__(self, path):
         self.path = path
 
-    def load_data(self, path, dataset="umls", use_shuffle=False, use_drop=False):
+    def load_data(self, path, dataset, use_shuffle=False, use_drop=False):
+        """
+        load PICO related files data
+        """
         datapath = path + "/" + dataset
         files = os.listdir(datapath)
         tokens = []
@@ -89,3 +95,34 @@ class DataLoader:
         for i in random_list:
             line[i] = c
         return line
+
+    def load_embedding(self, path, file_name, vocab, dim=200):
+        """
+        load embedding file and store word include only to save memory
+        """
+        emb_path = path + "/" + file_name
+        emb_store = path + "/" + os.path.splitext(file_name)[0] + ".pl"
+        if os.path.exists(emb_store):
+            with open(emb_store, 'rb') as f:
+                return pickle.load(f)
+        logging.info("load {} embedding...".format(file_name))
+        tic = time.time()
+        model = gensim.models.KeyedVectors.load_word2vec_format(emb_path, binary=True)
+        logging.info('{} load done.  (time used: {:.1f}s)\n'.format(file_name, time.time() - tic))
+        embedding_weights = {}
+        found = 0
+        notfound = 0
+        logging.info("start index word include embedding vector and store...")
+        for index, word in tqdm(vocab.items()):
+            if word in model.vocab:
+                embedding_weights[index] = model.word_vec(word)
+                found += 1
+            else:
+                embedding_weights[index] = np.random.uniform(-0.25, 0.25, dim).astype(np.float32)
+                notfound += 1
+        logging.info("found_cnt size is :" + str(found))
+        logging.info("not found_cnt size is :" + str(notfound))
+        logging.info("embedding_weights size is %s " % (len(embedding_weights)))
+        with open(emb_store, 'wb') as f:
+            pickle.dump(embedding_weights, f)
+        return embedding_weights
