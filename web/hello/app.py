@@ -20,3 +20,8 @@ def index():
 @app.route("/hello")
 def say_hello():
     return "<h1>hello</h1>"
+
+
+@app.route("/greet/<name>")
+def greet(name):
+    return "<h1>Hello, %s</h1>" % name
