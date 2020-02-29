@@ -5,7 +5,7 @@
 @time: 2020/2/29
 @contact: tenyun.zhang.cs@gmail.com
 """
-
+import click
 from flask import Flask
 
 app = Flask(__name__)
@@ -22,6 +22,18 @@ def say_hello():
     return "<h1>hello</h1>"
 
 
+# 动态路由
 @app.route("/greet/<name>")
 def greet(name):
     return "<h1>Hello, %s</h1>" % name
+
+
+@app.route("/greet", defaults={"name": "Programmer"})
+@app.route("/greet/<name>")
+def greet2(name):
+    return "<h1>Hello, %s</h1>" % name
+
+
+@app.cli.command()
+def hello():
+    click.echo("hello, Human!")
