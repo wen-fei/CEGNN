@@ -21,3 +21,17 @@ def hello():
 @app.route("/hello2", methods=["GET", "POST"])
 def hello2():
     return "<h1>Hello, Flask!</h1>"
+
+
+@app.route("/goback/<int:year>")
+def go_back(year):
+    return "<p>welcome to %d!</p>".format(2018 - year)
+
+
+colors = ["blue", "white", "red"]
+
+
+# @app.route("/color/<any(blue, white, red):color>")
+@app.route("/color/<any(%s):color" % str(colors)[1:-1])
+def three_color(color):
+    return "Love is patient and kind. Love is not jealousor boastful or proud or rude."
