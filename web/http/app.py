@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -52,3 +52,9 @@ def hello():
 @app.route("/hello")
 def hello3():
     return redirect("http://ww.example.com")
+
+
+@app.route("/hi")
+def hi():
+    # redirect to /hello
+    return redirect(url_for("hello"))
