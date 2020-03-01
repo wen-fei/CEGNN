@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 
-from flask import Flask, request, redirect, url_for, abort
+from flask import Flask, request, redirect, url_for, abort, make_response
 
 app = Flask(__name__)
 
@@ -63,3 +63,10 @@ def hi():
 @app.route("/404")
 def not_found():
     abort(404)
+
+
+@app.route("/foo")
+def foo():
+    response = make_response("hello world!")
+    response.mimetype = "text/plain"
+    return response
