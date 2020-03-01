@@ -92,3 +92,17 @@ def hello4():
     if name is None:
         name = request.cookies.get("name", "Human")
     return "<h1>Hello, %s</h1>" % name
+
+
+# 重定向到上一个页面
+def redirect_back(default="hello", **kwargs):
+    for target in request.args.get("next"), request.referrer:
+        if target:
+            return redirect(target)
+    return redirect(url_for(default, **kwargs))
+
+
+@app.route("/do_something_and_redirect")
+def do_something():
+    # do something
+    return redirect_back()
