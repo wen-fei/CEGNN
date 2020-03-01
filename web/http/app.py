@@ -81,4 +81,14 @@ def foo2():
     # response = make_response(json.dump(data))
     # response.mimetype = "application/json"
     # return response
-    return jsonify(name="li ming", gender="male")
+    # return jsonify(name="li ming", gender="male")
+    return jsonify(data)
+
+
+@app.route("/")
+@app.route("/hello")
+def hello4():
+    name = request.args.get("name")
+    if name is None:
+        name = request.cookies.get("name", "Human")
+    return "<h1>Hello, %s</h1>" % name
