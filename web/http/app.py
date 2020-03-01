@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 
-from flask import Flask, request, redirect, url_for, abort, make_response
+from flask import Flask, request, redirect, url_for, abort, make_response, json, jsonify
 
 app = Flask(__name__)
 
@@ -70,3 +70,15 @@ def foo():
     response = make_response("hello world!")
     response.mimetype = "text/plain"
     return response
+
+
+@app.route("/foo")
+def foo2():
+    data = {
+        "name": "li ming",
+        "gender": "male"
+    }
+    # response = make_response(json.dump(data))
+    # response.mimetype = "application/json"
+    # return response
+    return jsonify(name="li ming", gender="male")
