@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, abort
 
 app = Flask(__name__)
 
@@ -58,3 +58,8 @@ def hello3():
 def hi():
     # redirect to /hello
     return redirect(url_for("hello"))
+
+
+@app.route("/404")
+def not_found():
+    abort(404)
