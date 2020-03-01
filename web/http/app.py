@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 
-from flask import Flask, request
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 
@@ -41,3 +41,14 @@ def three_color(color):
 def o_something():
     # this code will run before every request
     pass
+
+
+@app.route("/hello")
+def hello():
+    # 设置状态码302，重定向，主体内容为空
+    return "", 302, {"Location": "http://www.example.com"}
+
+
+@app.route("/hello")
+def hello3():
+    return redirect("http://ww.example.com")
