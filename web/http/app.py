@@ -35,3 +35,9 @@ colors = ["blue", "white", "red"]
 @app.route("/color/<any(%s):color" % str(colors)[1:-1])
 def three_color(color):
     return "Love is patient and kind. Love is not jealousor boastful or proud or rude."
+
+
+@app.before_request
+def o_something():
+    # this code will run before every request
+    pass
