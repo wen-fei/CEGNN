@@ -4,8 +4,16 @@
 {% set name= "baz" %}
 <h1>Template</h1>
 <ul>
-    <li><a href="{{ url_for('watchlist.html')}}">watchlist</a></li>
-    <li>Filter: {{foo|musial}}</li>
+    <li><a href="{{ url_for('watchlist')}}">watchlist</a></li>
+    <li>Filter: {{foo|length}}</li>
     <li>Global: {{ bar() }}</li>
 </ul>
+{% endblock %}
+{% block styles %}
+{{ super() }}
+<style>
+    .foo {
+        color: red;
+    }
+</style>
 {% endblock %}
