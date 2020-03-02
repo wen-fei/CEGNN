@@ -86,3 +86,10 @@ def bar():
 
 app.jinja_env.globals["bar"] = bar
 app.jinja_env.globals["user"] = user
+
+
+def smiling(s):
+    return s + " :) "
+
+
+app.jinja_env.filters["smiling"] = smiling
