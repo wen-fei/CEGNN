@@ -60,3 +60,20 @@ movies = [
 @app.route("/watchlist")
 def watchlist():
     return render_template("watchlist.html", user=user, movies=movies)
+
+
+def inject_foo():
+    """
+    当我们调用render_template 函数渲染任意一个模板时， 所有使用
+    app.context_processor装饰器注册的模板上下文处理函数（ 包括Flask内置的上
+    下文处理函数） 都会被执行， 这些函数的返回值会被添加到模板中， 因此我们可以
+    在模板中直接使用foo变量。
+    :return:
+    """
+    foo = "i am foo."
+    # equal to return {'foo': foo}
+    return dict(foo=foo)
+
+
+# 自定义上下文
+app.context_processor(inject_foo)
