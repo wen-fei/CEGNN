@@ -82,3 +82,7 @@ app.context_processor(inject_foo)
 @app.template_global()
 def bar():
     return "I am a bar"
+
+
+app.jinja_env.globals["bar"] = bar
+app.jinja_env.globals["user"] = user
