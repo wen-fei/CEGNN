@@ -77,3 +77,8 @@ def inject_foo():
 
 # 自定义上下文
 app.context_processor(inject_foo)
+
+
+@app.template_global()
+def bar():
+    return "I am a bar"
