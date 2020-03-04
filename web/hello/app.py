@@ -7,8 +7,15 @@
 """
 import click
 from flask import Flask, render_template, flash, redirect, url_for
+from forms import LoginForm
 
 app = Flask(__name__)
+
+
+@app.route("/login")
+def basic():
+    form = LoginForm()
+    return render_template('login.html', form=form)
 
 
 @app.route("/")
@@ -104,6 +111,6 @@ def just_flash():
     return redirect(url_for("index"))
 
 
-@app.errorhandler
+@app.errorhandler(404)
 def page_not_found(e):
     return render_template("errors/404.html"), 404
