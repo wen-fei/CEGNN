@@ -94,10 +94,16 @@ def smiling(s):
 
 app.jinja_env.filters["smiling"] = smiling
 
-
 app.secret_key = 'secret string'
+
+
 @app.route("/flash")
 def just_flash():
     flash(" I am flash, who is looking for me!")
     # flash(u"你好，我是闪电")
     return redirect(url_for("index"))
+
+
+@app.errorhandler
+def page_not_found(e):
+    return render_template("errors/404.html"), 404
