@@ -1,17 +1,26 @@
-{% extends "base.html" %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <title>{% block title %}Template - HelloFlask{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
 {% block content %}
 {% set name= "baz" %}
 <h1>Template</h1>
-<ul>
-    <li><a href="{{ url_for('watchlist')}}">watchlist</a></li>
-    <li>Filter: {{foo|length}}</li>
-    <li>Global: {{ bar() }}</li>
-</ul>
-<!--<img src="{{ url_for('static', filename='avatar.jpg') }}" width="50">-->
+<div>
+    <form id="main_form" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
+        <input type="file" name="pdf">
+        <input type="submit" />
+    </form>
+</div>
+
 {% endblock %}
+
+
 {% block styles %}
-{{ super() }}
 <style>
     .foo {
         color: red;
@@ -25,3 +34,5 @@
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 {% endblock %}
+</body>
+</html>
