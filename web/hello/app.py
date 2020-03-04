@@ -6,7 +6,7 @@
 @contact: tenyun.zhang.cs@gmail.com
 """
 import click
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect, url_for
 
 app = Flask(__name__)
 
@@ -93,3 +93,11 @@ def smiling(s):
 
 
 app.jinja_env.filters["smiling"] = smiling
+
+
+app.secret_key = 'secret string'
+@app.route("/flash")
+def just_flash():
+    flash(" I am flash, who is looking for me!")
+    # flash(u"你好，我是闪电")
+    return redirect(url_for("index"))
