@@ -8,7 +8,7 @@
     <li>Filter: {{foo|length}}</li>
     <li>Global: {{ bar() }}</li>
 </ul>
-<img src="{{ url_for('static', filename='avatar.jpg') }}" width="50">
+<!--<img src="{{ url_for('static', filename='avatar.jpg') }}" width="50">-->
 {% endblock %}
 {% block styles %}
 {{ super() }}
@@ -17,5 +17,11 @@
         color: red;
     }
 </style>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'styles.css' ) }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css')}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 {% endblock %}
