@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
+import threading
+
 from tools.Grobid import PdfReader
 from background.easy_parallelize import *
 from tools.Extractor import Extractor
@@ -11,11 +13,23 @@ sys.path.append("..")
 
 
 class ExtractPDF:
+    _instance_lock = threading.Lock()
+
     def __init__(self):
         self.data_path = []
         self.out_path = []
         self.docs_pkl = ""
         self.files = []
+
+    def __new__(cls, *args, **kwargs):
+        """
+        single pattern
+        """
+        if not hasattr(ExtractPDF, "_instance"):
+            with ExtractPDF._instance_lock:
+                if not hasattr(ExtractPDF, "_instance"):
+                    ExtractPDF._instance = object.__new__(cls)
+        return ExtractPDF._instance
 
     def loaddic(self, dicPath):
         """
