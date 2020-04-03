@@ -9,7 +9,9 @@ import logging
 import os
 import time
 import gensim
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVR
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
@@ -48,9 +50,10 @@ def node_classification(dataset_path, dataset, model, emb_path, embedding, dim=2
     features = load_embeddings(model, nodes, os.path.join(emb_path, embedding), dim)
 
     lr = LogisticRegression()
+    clf = svm.SVC(decision_function_shape='ovo')
     x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size=0.3, random_state=0)
-    lr.fit(X=x_train, y=y_train)
-    y_predict = lr.predict(x_test)
+    clf.fit(X=x_train, y=y_train)
+    y_predict = clf.predict(x_test)
     precision = precision_score(y_test, y_predict, average=None)
     recall = recall_score(y_test, y_predict, average=None)
     f1 = f1_score(y_test, y_predict, average=None)
