@@ -139,12 +139,13 @@ def node_classification(model, emb_path, embedding, dim=200):
 
 if __name__ == '__main__':
     # dataset_path = "/home/gp/stu/ztt/data/drugbank/"
-    dataset_path = "G:\\CEGNN\\materials\\drugbank"
+    dataset_path = "G:\\CEGNN\\materials\\umls"
     # emb_path = "/home/gp/stu/ztt/data/embs/drugbank/"
-    emb_path = "G:\\CEGNN\\materials\\emb\\drugbank"
+    emb_path = "G:\\CEGNN\\materials\\emb\\umls"
     # Counter({'solid': 2200, 'None': 1496, 'liquid': 284, 'gas': 8})
-    dataset = "drugsbank_action_labels.csv"
-    models = {
+    # dataset = "drugsbank_action_labels.csv"
+    dataset = "umls_sty_samples.csv"
+    drugbank_models = {
         "ASNE": "drugbank_asne_200.emb",
         "deepwalk": "drugbank_deepwalk_200.embeddings",
         "GEMSEC": "drugbank_GEMSEC_200.emb",
@@ -153,18 +154,17 @@ if __name__ == '__main__':
         "LINE": "vec_drugbank_all.txt"
     }
 
+    umls_models = {
+        "deepwalk": "umls_deepwalk_200.embeddings",
+    }
+
     ids_labels = pd.read_csv(os.path.join(dataset_path, dataset), delimiter=",", dtype=np.dtype(str),
                              names=["ids", "labels"])
-    # ids_labels = ids_labels[ids_labels["labels"].isin(["inhibitor", "antagonist", "agonist", "binder"])]
     ids_labels = ids_labels[ids_labels["labels"] != "None"]
-    # ", "antibody",
-    # "potentiator", "activator", "ligand"])]
-    # ids_labels = ids_labels[np.where(ids_labels[:, -1] != "gas")]
     nodes = ids_labels["ids"].tolist()
     labels = ids_labels["labels"].tolist()
-    s = Counter(labels)
-    print(s)
-    for model_name, embedding in tqdm(models.items()):
+    # s = Counter(labels)
+    for model_name, embedding in tqdm(drugbank_models.items()):
         if model_name == "LINE":
             node_classification(model_name, emb_path, embedding, dim=400)
         else:
