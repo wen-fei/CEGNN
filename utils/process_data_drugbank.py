@@ -12,7 +12,7 @@ import numpy as np
 from gensim.models import KeyedVectors
 import pandas as pd
 from gensim.models import Word2Vec
-
+import xmlschema
 
 # Word2Vec()
 # wv_from_text = KeyedVectors.load_word2vec_format("G:\CEGNN\materials\drugbank\drugbank_node2vec_200.emb",
