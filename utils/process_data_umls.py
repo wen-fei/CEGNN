@@ -23,4 +23,3 @@ umls_rel2 = umls_rel[["CUI1", "CUI2"]]
 # umls_rel2.to_csv("../materials/umls/umls_rel_2.csv", sep="\t", encoding="utf-8", header=None, index=False)
 umls_rel1.to_csv("../materials/umls/umls_rel_weight_RLRQSIBCHD.csv", sep="\t", encoding="utf-8", header=None, index=False)
 umls_rel2.to_csv("../materials/umls/umls_rel_RLRQSIBCHD.csv", sep="\t", encoding="utf-8", header=None, index=False)
-print("done")
