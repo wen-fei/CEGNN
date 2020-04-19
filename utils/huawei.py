@@ -8,7 +8,7 @@
 
 import sys
 
-Precision = 0.891
-Recall = 0.934
+Precision = 77.67
+Recall = 80.29
 F1 = 2 * (Precision * Recall) / (Precision + Recall)
 print(F1)
