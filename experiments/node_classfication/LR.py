@@ -150,6 +150,7 @@ if __name__ == '__main__':
     # Counter({'solid': 2200, 'None': 1496, 'liquid': 284, 'gas': 8})
     dataset = "drugbank_action_labels.csv"
     # dataset = "umls_sty_samples.csv"
+    # dataset = "umls_sty_samples.csv"
     dataset_prefix = "drugbank"
     models = {
         "ASNE": dataset_prefix + "_asne_200.emb",
