@@ -11,6 +11,5 @@ import sys
 Precision = 90.74
 Recall = 85.99
 
-
 F1 = 2 * (Precision * Recall) / (Precision + Recall)
 print(F1)
