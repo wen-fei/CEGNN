@@ -3,36 +3,120 @@
 <head>
     {% block head %}
     <meta charset="utf-8">
-    <title>{% block title %}Template - HelloFlask{% endblock %}</title>
+    <title>{% block title %}WDS-Aceso{% endblock %}</title>
     {% endblock %}
 </head>
 <body>
 {% block content %}
 {% set name= "baz" %}
-<h1>Template</h1>
-<div>
+<nav class="navbar navbar-inverse">
+    <div>
+        <img class="center-block" src="{{ url_for('static', filename='images/wds_en.jpg')}}" height="50px">
+        <a href="#" class="btn btn-lg center-block"><h3 style="color:#ffffff">Aceso2.0 医学文献摘要抽取系统</h3></a>
+    </div>
+</nav>
+<div class="container">
     <form id="main_form" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
-        <input type="file" name="pdf">
-        <input type="submit" />
+        <input id="file-0" type="file" name="pdf" data-preview-file-type="text">
+        <br/>
+        <button id="upload" type="button" class="btn btn-primary">Generate</button>
+        <button type="reset" class="btn btn-outline-secondary">Reset</button>
     </form>
 </div>
+<!--<div id="myAlert1" class="alert alert-success">-->
+<!--    <a href="#" class="close" data-dismiss="alert">&times;</a>-->
+<!--    <strong>文件上传成功，请点击"Generate"开始抽取摘要！</strong>-->
+<!--</div>-->
+<!--<div id="myAlert2" class="alert alert-warning">-->
+<!--    <a href="#" class="close" data-dismiss="alert">&times;</a>-->
+<!--    <strong>文件上传失败！请重新选择文件上传！</strong>-->
+<!--</div>-->
+<footer class="bs-docs-footer">
+    <div class="container">
+        <!--    <ul class="bs-docs-footer-links">-->
+        <!--      <li><a href="https://github.com/twbs/bootstrap">GitHub 仓库</a></li>-->
+        <!--      <li><a href="../getting-started/#examples">实例</a></li>-->
+        <!--      <li><a href="http://www.youzhan.org">优站精选</a></li>-->
+        <!--      <li><a href="../about/">关于</a></li>-->
+        <!--    </ul>-->
 
+        <p>Designed and built with all the love in the world by <a href="https://www.github/wen-fei" target="_blank">@tengyun</a>
+            and <a href="http://wds.ac.cn/" target="_blank">@wds</a>.
+
+        <p>本项目源码受 <a rel="license" href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT</a>开源协议保护，文档受
+            <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a> 开源协议保护。
+        </p>
+
+    </div>
+</footer>
 {% endblock %}
 
 
 {% block styles %}
 <style>
-    .foo {
-        color: red;
+    .bs-docs-footer {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-top: 100px;
+        color: #99979c;
+        text-align: center;
+        background-color: #2a2730;
+    }
+
+    .bs-docs-footer-links {
+        padding-left: 0;
+        margin-bottom: 20px;
     }
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css')}}">
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+<link href="{{ url_for('static', filename='css/explorer-fas/theme.css')}}" media="all" rel="stylesheet"
+      type="text/css"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fileinput.min.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/xcConfirm.css')}}">
 {% endblock %}
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<!--<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>-->
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sortable.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/piexif.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fileinput.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/xcConfirm.js') }}"></script>
+<script>
+    $("#file-0").fileinput({
+        theme: 'fas',
+        uploadUrl: 'http://127.0.0.1:5000/upload',
+        allowedFileExtensions: ['pdf', 'PDF'],
+        uploadAsync: true,//默认异步上传
+        textEncoding: "UTF-8",//文本编码
+        maxFilesNum: 10,
+    });
+    $("#file-0").on('fileuploaded', function (event, data) {
+        var msg = data.response;//接收后台传过来的json数据
+        if (msg["msg"] == "success") {
+            var txt = "文件上传成功，请点击\"Generate\"按钮开始抽取摘要！";
+            window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.success);
+        } else {
+            var txt = "文件上传失败，请重新选择文件上传！";
+            window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.error);
+        }
+
+    });
+
+    $("#file-0").on('fileerror', function (event, data, msg) {//异步上传失败结果处理
+        alert("uploadError");
+    });
+
+
+</script>
+
 {% endblock %}
 </body>
 </html>
