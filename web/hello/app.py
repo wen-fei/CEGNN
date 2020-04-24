@@ -43,7 +43,7 @@ def read_abstract(path):
     files = os.listdir(path)
     result = {}
     for file in files:
-        with open(file) as f:
+        with open(os.path.join(path, file), encoding="utf-8") as f:
             result["file"] = f.read()
     return result
 
@@ -68,15 +68,25 @@ def upload_file():
             os.mkdir(abstract_result_path)
             path = os.path.join(pdf_path, filename)
             file.save(path)
-            # parse pdf file
-            extractPDF.parse(pdf_path, abstract_result_path, app.config['docs_pkl'])
-            abstract_result = read_abstract(os.listdir(abstract_result_path))
-            response["msg"] = abstract_result
-            # return redirect(url_for('uploaded_file', filename=filename))
+            # # parse pdf file
+            # extractPDF.parse(pdf_path, abstract_result_path, app.config['docs_pkl'])
+            # # get pdf file result
+            # pdf_sentences = read_abstract(abstract_result_path)
+            # # 1. PICO classification
+            # # pico = model(pdf_sentences)
+            # # 2. 信息量计算、去冗余
+            # # pico = pico_filter(pico)
+            # # 3. 摘要分类可视化
+            # response["ok"] = "True"
+            # response["msg"] = pdf_sentences
+            response["msg"] = "success"
         else:
-            response["ok"] = "False"
-            response["msg"] = "file is invalid. please re-upload pdf file."
-    return response
+            # response["ok"] = "False"
+            # response["msg"] = "file is invalid. please re-upload pdf file."
+            response["msg"] = "error"
+    else:
+        response["msg"] = "error"
+    return jsonify(response)
 
 
 @app.route('/uploads/<filename>')
