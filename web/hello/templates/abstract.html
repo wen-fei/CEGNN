@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <title>{% block title %}WDS-Aceso{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+{% set name= "baz" %}
+<nav class="navbar navbar-inverse">
+    <div>
+        <img class="center-block" src="{{ url_for('static', filename='images/wds_en.jpg')}}" height="50px">
+        <a href="#" class="btn btn-lg center-block"><h3 style="color:#ffffff">Aceso2.0 医学文献摘要抽取系统</h3></a>
+    </div>
+</nav>
+<div class="container">
+    <div class="jumbotron" style="padding-bottom: 0px; padding-top: 0px;">
+        <div class="container">
+            <div class="row">
+                <h2 class="center-block" style="text-align: center">摘要抽取结果</h2>
+                <div style="margin-top: 1px; float: right">
+                    <label>保存摘要到本地：</label>
+                    <button class="btn btn-lg">csv</button>
+                    <button class="btn btn-lg">txt</button>
+                </div>
+                <div class="col-xs-6 col-md-12">
+                    <h3 class="btn btn-lg btn-success">P</h3>
+                    <div class="abstract">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">1</label>
+                                <div class="abstract_sentence">Patients were eligible when they met the
+                                    following inclusive criteria: patients with age ranging from 45 to 80 years;
+                                    diagnosis
+                                    of an acute cerebral infarction (CI) or TIA; greater than 50% stenosis of internal
+                                    carotid artery (ICA), middle cerebral artery (MCA), vertebral artery (VA), basilar
+                                    artery (BA), and posterior cerebral artery (PCA) alone or in combination; unsuitable
+                                    or
+                                    reluctance to perform stent implantation.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">2</label>
+                                <div class="abstract_sentence">
+                                    Among these patients, 66 received clopidogrel 50 mg plus aspirin, another 66
+                                    participants were treated using clopidogrel 75 mg plus aspirin, and the remaining 68
+                                    patients were treated using aspirin alone.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">3</label>
+                                <div class="abstract_sentence">
+                                    In all 200 patients, the median age was 62 years, and 79 (39.5%) patients were
+                                    female.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="col-xs-6 col-md-12">
+                    <h3 class="btn btn-lg btn-info">I/C</h3>
+                    <div class="abstract">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">1</label>
+                                <div class="abstract_sentence">
+                                    Among these patients, 66 received clopidogrel 50 mg plus aspirin, another 66
+                                    participants were treated using clopidogrel 75 mg plus aspirin, and the remaining 68
+                                    patients were treated using aspirin alone.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">2</label>
+                                <div class="abstract_sentence">
+                                    Patients meeting the inclusion criteria were randomly assigned (1:1:1) to receive
+                                    aspirin alone (100 mg), or clopidogrel (50 mg) plus aspirin (100 mg), or clopidogrel
+                                    (75 mg) plus aspirin (100 mg).
+                                </div>
+                            </li>
+
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">3</label>
+                                <div class="abstract_sentence">
+                                    Patients in clopidogrel (50 mg) plus aspirin (100 mg) group received clopidogrel at
+                                    a dose of 50 mg/d and aspirin in a dose of 100 mg daily on day 1 through 90 days.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">4</label>
+                                <div class="abstract_sentence">
+                                    Cases in clopidogrel (75 mg) plus aspirin (100 mg) group received clopidogrel at a
+                                    dose of 75 mg/d and aspirin at a dose of 100 mg/d on day 1 through 90 days.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">5</label>
+                                <div class="abstract_sentence">
+                                    Ischemic stroke occurred in 6 patients (9.1%) treated with 50 mg clopidogrel and
+                                    aspirin, 6 patients (9.1%) receiving 75 mg clopidogrel and aspirin, whereas 19
+                                    patients (27.9%) in the aspirin group (aspirin alone vs copidogrel 50 mg plus
+                                    aspirin; 95% confidence intervals 1.704-23.779, P < 0.05; aspirin alone vs
+                                    copidogrel 75 mg plus aspirin; 95% confidence intervals 1.190-13.240, P < 0.05).
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">6</label>
+                                <div class="abstract_sentence">
+                                    We randomly assigned these patients to receive clopidogrel (75 or 50 mg) plus
+                                    aspirin (100 mg) or aspirin (100 mg) once daily through 90 days, and followed them
+                                    for 90 days.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="col-xs-6 col-md-12">
+                    <h3 class="btn btn-lg btn-warning">O</h3>
+                    <div class="abstract">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">1</label>
+                                <div class="abstract_sentence">
+                                    Both dual antiplatelet therapeutic approaches (copidogrel 50 mg plus aspirin, and
+                                    copidogrel 75 mg plus aspirin) showed an obvious decrease in the recurrence of
+                                    ischemic stroke (P < 0.05), comparing with that of the patients treated by aspirin
+                                    alone.
+                                </div>
+                            </li>
+
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">2</label>
+                                <div class="abstract_sentence">
+                                    Discussion ||| 7.44 ||| Taken together, our findings indicated that the use of 50 mg
+                                    clopidogrel plus aspirin, and 75 mg clopidogrel plus aspirin was superior to aspirin
+                                    alone in the aspect of reducing the incidence of ischemic stroke for patients with
+                                    ICVD and intracranial and extracranial arteriostenosis.
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="btn btn-sm btn-danger">3</label>
+                                <div class="abstract_sentence">
+                                    Conclusion: Accordingly, 50 mg clopidogrel plus aspirin, and 75 mg clopidogrel plus
+                                    aspirin were all superior to aspirin alone as stroke prevention in patients with
+                                    cerebral infarction or transient ischemic attack combined with intracranial and
+                                    extracranial arteriostenosis.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<footer class="bs-docs-footer">
+    <div class="container">
+        <p>Designed and built with all the love in the world by <a href="https://www.github/wen-fei" target="_blank">@tengyun</a>
+            and <a href="http://wds.ac.cn/" target="_blank">@wds</a>.
+
+        <p>本项目源码受 <a rel="license" href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT</a>开源协议保护，文档受
+            <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a> 开源协议保护。
+        </p>
+
+    </div>
+</footer>
+{% endblock %}
+
+<style>
+    .bs-docs-footer {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-top: 100px;
+        color: #99979c;
+        text-align: center;
+        background-color: #2a2730;
+    }
+
+    .bs-docs-footer-links {
+        padding-left: 0;
+        margin-bottom: 20px;
+    }
+
+    .abstract {
+        margin-top: 20px;
+        width: auto;
+        min-height: 100px;
+        /*max-height: 500px;*/
+        _height: 100px;
+    / / IE6 margin-left: auto;
+        /*margin-right: auto;*/
+        /*padding: 3px;*/
+        outline: 0;
+        /*border: 1px solid #a0b3d6;*/
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+    / / 超过最大高度就出现滚动条 _overflow-y: visible;
+    }
+
+    .abstract_sentence {
+        /*float: left;*/
+        font-size: 12px;
+        max-height: 50px;
+        margin-right: auto;
+        outline: 0;
+        word-wrap: break-word;
+        overflow-x: auto;
+        overflow-y: hidden;
+        /*/ / 超过最大高度就出现滚动条 _overflow-x: visible;*/
+    }
+
+    textarea {
+        resize: none;
+        readonly: true;
+    }
+</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css')}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sortable.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/piexif.min.js') }}"></script>
+
+{% endblock %}
+</body>
+</html>
