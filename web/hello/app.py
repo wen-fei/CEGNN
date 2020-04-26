@@ -54,7 +54,7 @@ def upload_file():
     upload pdf file and store it.
     # TODO: parse multi files
     """
-    extractPDF = ExtractPDF()
+
     response = {}
     if request.method == "POST":
         file = request.files['pdf']
@@ -68,17 +68,8 @@ def upload_file():
             os.mkdir(abstract_result_path)
             path = os.path.join(pdf_path, filename)
             file.save(path)
-            # # parse pdf file
-            # extractPDF.parse(pdf_path, abstract_result_path, app.config['docs_pkl'])
-            # # get pdf file result
-            # pdf_sentences = read_abstract(abstract_result_path)
-            # # 1. PICO classification
-            # # pico = model(pdf_sentences)
-            # # 2. 信息量计算、去冗余
-            # # pico = pico_filter(pico)
-            # # 3. 摘要分类可视化
-            # response["ok"] = "True"
-            # response["msg"] = pdf_sentences
+            response["pdf_path"] = pdf_path
+            response["abstract_result_path"] = abstract_result_path
             response["msg"] = "success"
         else:
             # response["ok"] = "False"
@@ -87,6 +78,27 @@ def upload_file():
     else:
         response["msg"] = "error"
     return jsonify(response)
+
+
+@app.route("/abstract", methods=["GET"])
+def get_abastract():
+    """
+    抽取摘要，并返回给客户端
+    """
+    # pdf_path = request.values['pdf_path']
+    # abstract_result_path = request.values['abstract_result_path']
+    # extractPDF = ExtractPDF()
+    # # parse pdf file
+    # extractPDF.parse(pdf_path, abstract_result_path, app.config['docs_pkl'])
+    # # get pdf file result
+    # pdf_sentences = read_abstract(abstract_result_path)
+    # # 1. PICO classification
+    # pico = model(pdf_sentences)
+    # # 2. 信息量计算、去冗余
+    # pico = pico_filter(pico)
+    # 3. 摘要分类可视化
+    return render_template("abstract.html")
+    # return render_template("abstract.html", pico=pico)
 
 
 @app.route('/uploads/<filename>')
