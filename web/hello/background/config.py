@@ -1,7 +1,7 @@
 import os
 import json
 
-CONFIG_KEY = "PDFREADER";
+CONFIG_KEY = "PDFREADER"
 
 
 def merge_dicts(*dict_args):

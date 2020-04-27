@@ -26,7 +26,7 @@ def easy_parallelize(func, data, pool_size=None):
     pool.close()
     pool.join()
 
-    return cleaned
+    return cleaned, "ok"
 
 
 def easy_ThreadSubmit(func, data, pool_size=None):
